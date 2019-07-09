@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Security.Cryptography.X509Certificates;
@@ -33,6 +34,52 @@ namespace TestConsole
 
             return extractedValue;
         }
+
+        public enum eTypes 
+        {
+            Unknown,
+            [Description("Type 1")]
+            Type1,
+            [Description("Type 2")]
+            Type2,
+            [Description("Type 3")]
+            Type3,
+            [Description("Type 4")]
+            Type4
+        }
+
+        public enum eLabels
+        {
+            Unknown,
+            [Description("MACHINE NO.")]
+            MACHINENO,
+            [Description("DATE - TIME")]
+            DATETIME,
+            [Description("CASSETTE")]
+            CASSETTE,
+            [Description("REJECTED")]
+            REJECTED,
+            [Description("REMAINING")]
+            REMAINING,
+            [Description("DISPENSED")]
+            DISPENSED,
+            [Description("TOTAL")]
+            TOTAL,
+            [Description("LAST CLEARED")]
+            LASTCLEARED
+        }
+
+        public class TextElement
+        {
+            public eLabels? Label { get; set; }
+            public eTypes? Type { get; set; }
+
+            public String Value { get; set; }
+
+            public TextAnnotation ExtractedValue { get; set; }
+
+            //public IEnumerable<TextAnnotation> TextAnnotations { get; set; }
+        }
         static void Main(string[] args)
         {
 
@@ -41,17 +88,100 @@ namespace TestConsole
             var ocrRequest = OCRHelper.BuildRequest(null);
             var temp = OCRHelper.GetOCRResult(ocrRequest).Result;
 
+            var textAnnotations = temp.responses.FirstOrDefault().textAnnotations;
+
+
+            List<TextElement> elements = new List<TextElement>();
+            int index = 1;
+            while (index < textAnnotations.Count)
+            { 
+                var textBlock = textAnnotations[index];
+
+                
+
+                var y1 = textBlock.boundingPoly.vertices[0].y;
+                var y2 = textBlock.boundingPoly.vertices[2].y;
+                
+
+                var matchingY = textAnnotations.Where(textB => 
+                                                        (textB.boundingPoly.vertices[0].y == y1 && textB.boundingPoly.vertices[2].y == y2) ||
+                                                        (Math.Abs(textB.boundingPoly.vertices[0].y - y1) <=5 && Math.Abs(textB.boundingPoly.vertices[2].y - y2) <=5));
+                if (String.Equals(textBlock.description, "Type", StringComparison.OrdinalIgnoreCase))
+                {
+                    index = index + matchingY.Count();
+                }
+
+                if (matchingY.Any())
+                {
+
+                    TextElement element = new TextElement();
+
+                    element.Label = matchingY.FirstOrDefault()?.description?.TryFromEnumStringValue<eLabels>();
+
+                    if(element.Label == eLabels.Unknown)
+                    {
+                        index = index + matchingY.Count();
+                        continue;
+                    }
+
+                    //element.Type = eTypes.Type1;
+                    element.Value = matchingY.Skip(1).FirstOrDefault()?.description;
+                    //element.TextAnnotations = matchingY;
+
+                    TextElement element2 = new TextElement();
+
+                    element2.Label = element.Label;
+                    //element.Type = eTypes.Type1;
+                    element2.Value = matchingY.Skip(2).FirstOrDefault()?.description;
+
+                    elements.Add(element);
+                    elements.Add(element2);
+
+                    //index = index + matchingY.Count();
+
+                    foreach (var processed in matchingY.ToList())
+                        textAnnotations.Remove(processed);
+
+                }
+                else
+                {
+                    index++;
+                }
+            /*foreach (var vertex in textBlock.boundingPoly.vertices)
+
+
+            {
+                var xSame = textAnnotations.GroupBy(x => x.boundingPoly.vertices.Where(v => v.y == vertex.y));
+            }
+
+
+            var groupPolys = textAnnotations
+                                .GroupBy(x => x.boundingPoly.vertices
+
+                                                                                .Where(y => textBlock.boundingPoly.vertices.Any(vextex => y.x == vextex.x && y.y - vextex.y < 20) ||
+                                                                                            textBlock.boundingPoly.vertices.Any(vextex => y.y == vextex.y || y.x - vextex.x < 20)).Count() > 0
+                                        );*/
+            //var groupPolys = textAnnotations
+            //                    .GroupBy(x => x.boundingPoly.vertices
+            //                                            .Any(vextex => textBlock.boundingPoly.vertices
+            //                                                                    .Where(y => (y.x == vextex.x || y.x - vextex.x < 20) ||
+            //                                                                                (y.y == vextex.y || y.y - vextex.y < 20) ).Count() > 0)
+            //                            );
+
+
+
+             var checking = elements.Distinct();
+
+            }
 
 
 
 
-
-
-            var possibleKeys = new String[] { "MACHINE NO.", "DATE - TIME", "CASSETTE", "REJECTED", "REMAINING", "DISPENSED", "TOTAL", "TYPE 1", "TYPE 2", "TYPE 3", "TYPE 4", "LAST CLEARED" };
+        var possibleKeys = new String[] { "MACHINE NO.", "DATE - TIME", "CASSETTE", "REJECTED", "REMAINING", "DISPENSED", "TOTAL", "TYPE 1", "TYPE 2", "TYPE 3", "TYPE 4", "LAST CLEARED" };
 
             string Document_Text_Detection = "ATM RECEIPT\nMACHINE NO. = AAA\nDATE - TIME = 15-May-17\n10:19\nCASSETTE\nREJECTED\nREMAINING\nDISPENSED\nTOTAL\nTYPE 1\n00100\n00000\n00045\n00055\n00100\nTYPE 2\n00200\n00000\n00050\n00150\n00200\nCASSETTE\nREJECTED\nREMAINING\nDISPENSED\nTOTAL\nTYPE 3 TYPE 4\n00300 00400\n00000 00000\n00040 00050\n00260 00350\n0030000400\nLAST CLEARED\n10-May-17\n10:54\n";
 
-            string OCRText = Document_Text_Detection;
+            string OCRText = "Document_Text_Detection";
             var temp1 = OCRText.Split(new string[] { "\n" }, StringSplitOptions.None);
 
             Dictionary<CompositeKey, string> values = new Dictionary<CompositeKey, string>();

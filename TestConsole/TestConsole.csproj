@@ -72,6 +72,7 @@
   <ItemGroup>
     <Compile Include="BlockingCollectionDemo.cs" />
     <Compile Include="DisposableBase.cs" />
+    <Compile Include="EnumExtension.cs" />
     <Compile Include="GoogleOCRResponse.cs" />
     <Compile Include="OCRRelated.cs" />
     <Compile Include="Program.cs" />
