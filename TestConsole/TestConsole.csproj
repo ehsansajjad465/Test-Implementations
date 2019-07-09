@@ -72,6 +72,8 @@
   <ItemGroup>
     <Compile Include="BlockingCollectionDemo.cs" />
     <Compile Include="DisposableBase.cs" />
+    <Compile Include="GoogleOCRResponse.cs" />
+    <Compile Include="OCRRelated.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestDisposable.cs" />

@@ -35,16 +35,28 @@ namespace TestConsole
         }
         static void Main(string[] args)
         {
+
+
+
+            var ocrRequest = OCRHelper.BuildRequest(null);
+            var temp = OCRHelper.GetOCRResult(ocrRequest).Result;
+
+
+
+
+
+
+
             var possibleKeys = new String[] { "MACHINE NO.", "DATE - TIME", "CASSETTE", "REJECTED", "REMAINING", "DISPENSED", "TOTAL", "TYPE 1", "TYPE 2", "TYPE 3", "TYPE 4", "LAST CLEARED" };
 
             string Document_Text_Detection = "ATM RECEIPT\nMACHINE NO. = AAA\nDATE - TIME = 15-May-17\n10:19\nCASSETTE\nREJECTED\nREMAINING\nDISPENSED\nTOTAL\nTYPE 1\n00100\n00000\n00045\n00055\n00100\nTYPE 2\n00200\n00000\n00050\n00150\n00200\nCASSETTE\nREJECTED\nREMAINING\nDISPENSED\nTOTAL\nTYPE 3 TYPE 4\n00300 00400\n00000 00000\n00040 00050\n00260 00350\n0030000400\nLAST CLEARED\n10-May-17\n10:54\n";
 
             string OCRText = Document_Text_Detection;
-            var temp = OCRText.Split(new string[] { "\n" }, StringSplitOptions.None);
+            var temp1 = OCRText.Split(new string[] { "\n" }, StringSplitOptions.None);
 
             Dictionary<CompositeKey, string> values = new Dictionary<CompositeKey, string>();
 
-            foreach (var item in temp)
+            foreach (var item in temp1)
             {
                 string label = "";
                 if (possibleKeys.Any(x => item.IndexOf(x) >= 0))
@@ -78,11 +90,11 @@ namespace TestConsole
             String m;
             for (string m2; n > 0;)
             {
-                var temp1 = Enumerable.Range(0, ++a);
-                foreach(var x in temp1)
+                var temp2 = Enumerable.Range(0, ++a);
+                foreach(var x in temp2)
                 {
-                    var temp2 = (m = x + "" + (a - x) + x);
-                    var revers = temp2.Reverse();
+                    var temp3 = (m = x + "" + (a - x) + x);
+                    var revers = temp3.Reverse();
                 }
             }
                 if (Enumerable.Range(0, ++a).All(x => !(m = x + "" + (a - x) + x).Reverse().SequenceEqual(m)))
