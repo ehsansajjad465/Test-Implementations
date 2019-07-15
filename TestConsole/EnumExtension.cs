@@ -39,7 +39,7 @@ namespace TestConsole
                     .GetFields()
                     .First(f => f.GetCustomAttributes(typeof(DescriptionAttribute), false)
                                  .Cast<DescriptionAttribute>()
-                                 .Any(a => a.Description.Equals(description, StringComparison.OrdinalIgnoreCase))
+                                 .Any(a => description.ToUpper().Contains(a.Description))
                     )
                     .GetValue(null);
             }catch(Exception ex)
