@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Security.Cryptography.X509Certificates;
@@ -84,6 +85,12 @@ namespace TestConsole
         }
         static void Main(string[] args)
         {
+
+            var test = DateTime.ParseExact("16.07.19 04:31", "dd.MM.yy HH:mm", CultureInfo.InvariantCulture);
+
+            Parking.ParkingLogic();
+
+            Console.ReadKey();
 
             var possibleKeys = new String[] { "MACHINE NO.","MACHINE ID", "DATE - TIME", "CASSETTE", "REJECTED", "REMAINING", "DISPENSED", "TOTAL", "TYPE 1", "TYPE 2", "TYPE 3", "TYPE 4", "LAST CLEARED" };
 
