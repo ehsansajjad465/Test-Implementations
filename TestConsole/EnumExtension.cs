@@ -48,5 +48,21 @@ namespace TestConsole
 
             return default(T);
         }
+
+        public static LabelFormMap TryConvertToRecieptMetaData(this string description, RecieptMetaData recieptMetaData)
+        {
+            try
+            {
+                return recieptMetaData.Attributes
+                                 .Where(a => description.ToUpper().Contains(a.RecieptLabel.RowLabel))
+                                 .FirstOrDefault();
+                    
+            }
+            catch (Exception ex)
+            {
+            }
+
+            return default(LabelFormMap);
+        }
     }
 }
