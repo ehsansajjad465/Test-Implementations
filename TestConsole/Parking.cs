@@ -20,6 +20,18 @@ namespace TestConsole
         Total
     }
 
+    public enum ParkingPhysicalCashLabels
+    {
+        [Description("Unknown")]
+        Unknown,
+        [Description("MACHINE ID")]
+        MachineID,
+        [Description("Date")]
+        Date,
+        [Description("Customer")]
+        Customer
+    }
+
     public class ParkingData
     {
         public string MachineID { get; set; }
@@ -36,6 +48,18 @@ namespace TestConsole
     public class ParkingElement
     {
         public ParkingLabels? Label { get; set; }
+
+        public String Value { get; set; }
+    }
+
+    public class ParkingPhysicalCashData
+    {
+        public List<ParkingPhysicalCashElement> RecieptDetails { get; set; }
+    }
+
+    public class ParkingPhysicalCashElement
+    {
+        public ParkingPhysicalCashLabels? Label { get; set; }
 
         public String Value { get; set; }
     }
@@ -209,6 +233,93 @@ namespace TestConsole
             ////}
 
             #endregion
+        }
+
+        public static void ParkingPhysicalCashLogic()
+        {
+
+            var possibleKeys = new String[] { "MACHINE ID", "SEQUENCE NO", "EUR" };
+
+            string dateRegex = @"([0-2][0-9]|(3)[0-1])(\.)(((0)[0-9])|((1)[0-2]))(\.)\d{2,4} ";
+            string timeRegex = @"([01]\d|2[0-3]):([0-5]\d)";
+
+
+            var ocrRequest = OCRHelper.BuildRequest(null);
+            var temp = OCRHelper.GetOCRResult(ocrRequest).Result;
+
+            var textAnnotations = temp.responses.FirstOrDefault().textAnnotations;
+
+            ParkingPhysicalCashData physicalCashData = new ParkingPhysicalCashData();
+            
+
+
+            List<ParkingPhysicalCashElement> parkingElements = new List<ParkingPhysicalCashElement>();
+            int index = 1;
+            while (index < textAnnotations.Count)
+            {
+                var textBlock = textAnnotations[index];
+
+
+
+                var y1 = textBlock.boundingPoly.vertices[0].y;
+                var y2 = textBlock.boundingPoly.vertices[2].y;
+
+                var x1 = textBlock.boundingPoly.vertices[1].x;
+                var x2 = textBlock.boundingPoly.vertices[3].x;
+
+                var matchingY = textAnnotations.Where(textB =>
+                                                           (textB.boundingPoly.vertices[0].y == y1 && textB.boundingPoly.vertices[2].y == y2) ||
+                                                           (Math.Abs(textB.boundingPoly.vertices[0].y - y1) <= 25 && Math.Abs(textB.boundingPoly.vertices[2].y - y2) <= 25))
+                                                   .OrderBy(x => x.boundingPoly.vertices[0].x);
+
+                var matchingX = textAnnotations.Where(textB =>
+                                               (
+                                                   (textB.boundingPoly.vertices[1].x == x1 && textB.boundingPoly.vertices[3].x == x2) ||
+                                                   (Math.Abs(textB.boundingPoly.vertices[1].x - x1) <= 100 && Math.Abs(textB.boundingPoly.vertices[3].x - x2) <= 100)
+                                               )
+                                                && textB.boundingPoly.vertices[0].y > y1 && textB.boundingPoly.vertices[2].y > y2)
+                                       .OrderBy(x => x.boundingPoly.vertices[1].y);
+
+                if (matchingX.Any())
+                {
+                    var cleaned = matchingX.Where(x => x.description != "-");
+
+                    var matchingWithIndex = cleaned.Select((ax, i) => new { Index = i, Label = textBlock.description.TryFromEnumStringValue<ParkingPhysicalCashLabels>(), TextAnnotation = ax });
+                    var finalResult = matchingWithIndex.Where(x => x.Label != ParkingPhysicalCashLabels.Unknown);
+
+                    if (finalResult.Any())
+                    {
+                        int skipIndex = 0;
+                        while (skipIndex < 4)
+                        {
+
+                            var item = finalResult.Skip(skipIndex).FirstOrDefault();
+
+                            //foreach (var item in matchingWithIndex)
+                            //{
+                            if (item != null)
+                            {
+                                ParkingPhysicalCashElement parking = new ParkingPhysicalCashElement();
+                                parking.Label = item.Label;
+
+                                
+
+                                parkingElements.Add(parking);
+
+                            }
+
+                            skipIndex++;
+                            //}
+                        }
+                    }
+                }
+
+                index++;
+            }
+
+            physicalCashData.RecieptDetails = parkingElements;
+
+
         }
     }
 }

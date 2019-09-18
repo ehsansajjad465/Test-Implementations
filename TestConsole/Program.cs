@@ -12,54 +12,13 @@ using TestConsole.Factories;
 
 namespace TestConsole
 {
-    public class CostsChargesBasePage
-    {
-
-    }
-
-    public class FundCostPage : CostsChargesBasePage
-    {
-
-    }
-    public class FundCostPageViewModel : CostsChargesViewModel<FundCostPage>
-    {
-
-    }
-    public interface ICostsChargesViewModel<out T> where T : CostsChargesBasePage
-
-    {
-
-    }
-
-    public abstract class CostsChargesViewModel<T> : ICostsChargesViewModel<T> where T : CostsChargesBasePage
-    {
-    }
-
-    class Base
-    {
-        protected int Data { get; set; }
-    }
-    class SubClasss1 : Base
-    {
-        public SubClasss1(int Data)
-        {
-            this.Data = Data;
-        }
-    }
-    class SubClasss2 : Base
-    {
-        public SubClasss1 MyFunction()
-        {
-            SubClasss1 copy = new SubClasss1(this.Data);
-
-            return copy;
-        }
-    }
     class Program
     {
         static void Main(string[] args)
         {
-            
+
+            Parking.ParkingPhysicalCashLogic();
+
             var test = DateTime.ParseExact("16.07.19 04:31", "dd.MM.yy HH:mm", CultureInfo.InvariantCulture);
 
             var atmRecieptMetaData = new ATMRecieptMetaDataFactory().CreateMetaData();
@@ -205,6 +164,53 @@ namespace TestConsole
             return false;
         }
     }
+
+
+
+    public class CostsChargesBasePage
+    {
+
+    }
+
+    public class FundCostPage : CostsChargesBasePage
+    {
+
+    }
+    public class FundCostPageViewModel : CostsChargesViewModel<FundCostPage>
+    {
+
+    }
+    public interface ICostsChargesViewModel<out T> where T : CostsChargesBasePage
+
+    {
+
+    }
+
+    public abstract class CostsChargesViewModel<T> : ICostsChargesViewModel<T> where T : CostsChargesBasePage
+    {
+    }
+
+    class Base
+    {
+        protected int Data { get; set; }
+    }
+    class SubClasss1 : Base
+    {
+        public SubClasss1(int Data)
+        {
+            this.Data = Data;
+        }
+    }
+    class SubClasss2 : Base
+    {
+        public SubClasss1 MyFunction()
+        {
+            SubClasss1 copy = new SubClasss1(this.Data);
+
+            return copy;
+        }
+    }
+
     public interface IInterface
     {
         void Method();
