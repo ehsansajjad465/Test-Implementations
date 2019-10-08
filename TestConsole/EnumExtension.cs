@@ -42,7 +42,8 @@ namespace TestConsole
                                  .Any(a => description.ToUpper().Contains(a.Description))
                     )
                     .GetValue(null);
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
             }
 
@@ -56,7 +57,7 @@ namespace TestConsole
                 return recieptMetaData.Attributes
                                  .Where(a => description.ToUpper().Contains(a.RecieptLabel.RowLabel))
                                  .FirstOrDefault();
-                    
+
             }
             catch (Exception ex)
             {
@@ -64,5 +65,26 @@ namespace TestConsole
 
             return default(LabelFormMap);
         }
+
+
+        public static List<String> ToList<TEnum>(this TEnum obj)
+            where TEnum : struct, IComparable, IFormattable, IConvertible // correct one
+        {
+
+            return Enum.GetValues(typeof(TEnum)).OfType<Enum>()
+                .Select(x => x.Description()).ToList();
+        }
+
+        public static string Description(this Enum value)
+        {
+            FieldInfo field = value.GetType().GetField(value.ToString());
+
+            DescriptionAttribute attribute
+                = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute))
+                    as DescriptionAttribute;
+
+            return attribute == null ? value.ToString() : attribute.Description;
+        }
+
     }
 }

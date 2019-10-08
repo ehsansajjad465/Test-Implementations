@@ -24,12 +24,26 @@ namespace TestConsole
     {
         [Description("Unknown")]
         Unknown,
-        [Description("MACHINE ID")]
+        [Description("MACHINEID:")]
         MachineID,
-        [Description("Date")]
+        [Description("DATE:")]
         Date,
-        [Description("Customer")]
-        Customer
+        [Description("CUSTOMER:")]
+        Customer,
+        [Description("TIME:")]
+        Time,
+        [Description("LOCATION:")]
+        Location,
+        [Description("BRANCH:")]
+        Branch,
+        [Description("DENOMINATION20CENT:")]
+        Denomination20Cent,
+        [Description("DENOMINATION50CENT:")]
+        Denomination50Cent,
+        [Description("DENOMINATION1EURO:")]
+        Denomination1Euro,
+        [Description("DENOMINATION2EURO:")]
+        Denomination2Euro,
     }
 
     public class ParkingData
@@ -68,7 +82,7 @@ namespace TestConsole
 
         public static void ParkingLogic()
         {
-            var possibleKeys = new String[] { "MACHINE ID", "SEQUENCE NO", "EUR"};
+            var possibleKeys = new String[] { "MACHINE ID", "SEQUENCE NO", "EUR" };
 
             string dateRegex = @"([0-2][0-9]|(3)[0-1])(\.)(((0)[0-9])|((1)[0-2]))(\.)\d{2,4} ";
             string timeRegex = @"([01]\d|2[0-3]):([0-5]\d)";
@@ -131,7 +145,7 @@ namespace TestConsole
                 var matchingX = textAnnotations.Where(textB =>
                                                (
                                                    (textB.boundingPoly.vertices[1].x == x1 && textB.boundingPoly.vertices[3].x == x2) ||
-                                                   (Math.Abs(textB.boundingPoly.vertices[1].x - x1) <=100 && Math.Abs(textB.boundingPoly.vertices[3].x - x2) <= 100)
+                                                   (Math.Abs(textB.boundingPoly.vertices[1].x - x1) <= 100 && Math.Abs(textB.boundingPoly.vertices[3].x - x2) <= 100)
                                                )
                                                 && textB.boundingPoly.vertices[0].y > y1 && textB.boundingPoly.vertices[2].y > y2)
                                        .OrderBy(x => x.boundingPoly.vertices[1].y);
@@ -148,9 +162,9 @@ namespace TestConsole
                         int skipIndex = 0;
                         while (skipIndex < 4)
                         {
-                            
+
                             var item = finalResult.Skip(skipIndex).FirstOrDefault();
-                            
+
                             //foreach (var item in matchingWithIndex)
                             //{
                             if (item != null)
@@ -160,17 +174,17 @@ namespace TestConsole
 
                                 if (item.Label == ParkingLabels.Count)
                                 {
-                                    
+
                                     parking.Value = item.TextAnnotation.description;
                                 }
                                 else
                                 {
 
-                                    parking.Value = String.Join("",finalResult.Skip(skipIndex * 3).Take(3).OrderBy(x => x.TextAnnotation.boundingPoly.vertices[0].x).Select(x => x.TextAnnotation.description));
+                                    parking.Value = String.Join("", finalResult.Skip(skipIndex * 3).Take(3).OrderBy(x => x.TextAnnotation.boundingPoly.vertices[0].x).Select(x => x.TextAnnotation.description));
                                 }
 
                                 parkingElements.Add(parking);
-                                
+
                             }
 
                             skipIndex++;
@@ -236,7 +250,7 @@ namespace TestConsole
         }
 
         public static void ParkingPhysicalCashLogic()
-        {
+         {
 
             var possibleKeys = new String[] { "MACHINE ID", "SEQUENCE NO", "EUR" };
 
@@ -250,7 +264,7 @@ namespace TestConsole
             var textAnnotations = temp.responses.FirstOrDefault().textAnnotations;
 
             ParkingPhysicalCashData physicalCashData = new ParkingPhysicalCashData();
-            
+
 
 
             List<ParkingPhysicalCashElement> parkingElements = new List<ParkingPhysicalCashElement>();
@@ -280,46 +294,58 @@ namespace TestConsole
                                                 && textB.boundingPoly.vertices[0].y > y1 && textB.boundingPoly.vertices[2].y > y2)
                                        .OrderBy(x => x.boundingPoly.vertices[1].y);
 
-                if (matchingX.Any())
+                //var labelsToFind = new String[] { "MACHINEID:", "Date:" };
+
+                //var labelsToFind = typeof(ParkingPhysicalCashLabels)
+                //    .GetFields()
+                //    .Select(f => f.GetCustomAttributes(typeof(DescriptionAttribute), false).First())
+                //        .Cast<DescriptionAttribute>()
+                //        .Where(x => String.Equals(x.Description, ParkingPhysicalCashLabels.Unknown.ToString(),
+                //            StringComparison.OrdinalIgnoreCase))
+                //        .Select(x => x.Description).ToArray();
+
+                var labelsToFind = ParkingPhysicalCashLabels.Time.ToList();
+
+                if (matchingY.Any())
                 {
-                    var cleaned = matchingX.Where(x => x.description != "-");
+                    var line = String.Join("", matchingY.Select(x => x.description));
+                    
 
-                    var matchingWithIndex = cleaned.Select((ax, i) => new { Index = i, Label = textBlock.description.TryFromEnumStringValue<ParkingPhysicalCashLabels>(), TextAnnotation = ax });
-                    var finalResult = matchingWithIndex.Where(x => x.Label != ParkingPhysicalCashLabels.Unknown);
+                    var labelsFound = labelsToFind.Where(x => line.IndexOf(x, StringComparison.OrdinalIgnoreCase) >= 0)
+                        .Select(x =>  new { Label = x, Index = line.IndexOf(x, StringComparison.OrdinalIgnoreCase)}).ToArray();
 
-                    if (finalResult.Any())
+
+                    for (int i=0; i < labelsFound.Length; i++)
                     {
-                        int skipIndex = 0;
-                        while (skipIndex < 4)
+                        var labelEnum = labelsFound[i].Label.TryFromEnumStringValue<ParkingPhysicalCashLabels>();
+                        var labelValue = line.Substring(labelsFound[i].Index + labelsFound[i].Label.Length,
+                            (i < labelsFound.Length - 1) ? (labelsFound[i + 1].Index - labelsFound[i].Label.Length) : line.Length - (labelsFound[i].Index + labelsFound[i].Label.Length));
+
+                        if (labelEnum != ParkingPhysicalCashLabels.Unknown)
                         {
-
-                            var item = finalResult.Skip(skipIndex).FirstOrDefault();
-
-                            //foreach (var item in matchingWithIndex)
-                            //{
-                            if (item != null)
-                            {
-                                ParkingPhysicalCashElement parking = new ParkingPhysicalCashElement();
-                                parking.Label = item.Label;
-
-                                
-
+                            ParkingPhysicalCashElement parking = new ParkingPhysicalCashElement();
+                            parking.Label = labelEnum;
+                            parking.Value = labelValue;
+                            if(parkingElements.All(x => x.Label != parking.Label))
                                 parkingElements.Add(parking);
-
-                            }
-
-                            skipIndex++;
-                            //}
                         }
                     }
+
+                    
+
                 }
 
                 index++;
-            }
 
+                //}
+            }
             physicalCashData.RecieptDetails = parkingElements;
 
-
         }
+
+
+
+
     }
 }
+
