@@ -36,13 +36,13 @@ namespace TestConsole
         Location,
         [Description("BRANCH:")]
         Branch,
-        [Description("DENOMINATION20CENT:")]
+        [Description("DENOMINATION20CENT")]
         Denomination20Cent,
-        [Description("DENOMINATION50CENT:")]
+        [Description("DENOMINATION50CENT")]
         Denomination50Cent,
-        [Description("DENOMINATION1EURO:")]
+        [Description("DENOMINATION1EURO")]
         Denomination1Euro,
-        [Description("DENOMINATION2EURO:")]
+        [Description("DENOMINATION2EURO")]
         Denomination2Euro,
     }
 
