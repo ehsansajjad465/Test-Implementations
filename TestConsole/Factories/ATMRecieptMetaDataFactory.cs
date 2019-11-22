@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TestConsole.Factories
 {
-    public class ATMRecieptMetaDataFactory : RecieptMetaDataFactory
+    public class ATMRecieptMetaDataFactory : ReceiptMetaDataFactory
     {
         public override RecieptMetaData CreateMetaData()
         {

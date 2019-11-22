@@ -9,13 +9,37 @@ using System.Text;
 using System.Threading.Tasks;
 using TestConsole;
 using TestConsole.Factories;
+using TestConsole.Zeeshan;
 
 namespace TestConsole
 {
     class Program
     {
+        private static void ProcessData<T>(IEnumerable<IEnumerable<T>> data)
+        {
+
+        }
+
+        private static void ProcessData<T>(IEnumerable<IList<T>> data)
+        {
+
+        }
+
+        private static void ProcessData<T>(IList<IEnumerable<T>> data)
+        { }
+
+        private static void ProcessData<T>(IList<IList<T>> data)
+        { }
         static void Main(string[] args)
         {
+            //  List<List<int>> data = new List<List<int>>();
+
+            // ProcessData(data);
+            //Method2();
+
+            Extrarctor extractor = new Extrarctor();
+            extractor.api();
+
 
             Parking.ParkingPhysicalCashLogic();
 
@@ -57,6 +81,15 @@ namespace TestConsole
             if (Enumerable.Range(0, ++a).All(x => !(m = x + "" + (a - x) + x).Reverse().SequenceEqual(m)))
                 n--;
             Console.WriteLine(a);
+        }
+
+        public static async Task Method2()
+        {
+            for (int i = 0; i < 25; i++)
+            {
+                await Task.Factory.StartNew(() => Console.WriteLine(" Method 2"));
+            }
+
         }
 
 

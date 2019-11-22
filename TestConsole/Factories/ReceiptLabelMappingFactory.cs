@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using TestConsole.Zeeshan;
 
-namespace TestConsole
+namespace TestConsole.Factories
 {
-    public abstract class ReceiptMetaDataFactory
+    public class ReceiptLabelMappingFactory
     {
         private List<ATMCounter.ATMCounterResponse> Response { get; set; }
-        protected ReceiptMetaDataFactory()
+        public ReceiptLabelMappingFactory()
         {
-           Initialize();
+            Initialize();
         }
 
         public void Initialize()
@@ -21,11 +21,9 @@ namespace TestConsole
             var contentJson = System.IO.File.ReadAllText("APIFullResponse.txt");
             Response = JsonConvert.DeserializeObject<List<ATMCounter.ATMCounterResponse>>(contentJson);
         }
-        public abstract RecieptMetaData CreateMetaData();
-
         public ATMCounter.ATMCounterResponse GetResponse(string receiptName)
         {
-            var receiptMetaData = Response.FirstOrDefault(x => String.Equals(x.recepientName, receiptName,StringComparison.OrdinalIgnoreCase));
+            var receiptMetaData = Response.FirstOrDefault(x => String.Equals(x.recepientName, receiptName, StringComparison.OrdinalIgnoreCase));
             return receiptMetaData;
         }
     }

@@ -72,7 +72,8 @@ namespace TestConsole
         {
 
             return Enum.GetValues(typeof(TEnum)).OfType<Enum>()
-                .Select(x => x.Description()).ToList();
+                .Select(x => x.Description()).ToList<string>();
+
         }
 
         public static string Description(this Enum value)

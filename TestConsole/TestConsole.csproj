@@ -14,6 +14,21 @@
     <Deterministic>true</Deterministic>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -54,6 +69,7 @@
     <Compile Include="DisposableBase.cs" />
     <Compile Include="EnumExtension.cs" />
     <Compile Include="Factories\ATMRecieptMetaDataFactory.cs" />
+    <Compile Include="Factories\ReceiptLabelMappingFactory.cs" />
     <Compile Include="GoogleOCRResponse.cs" />
     <Compile Include="JsonMap.cs" />
     <Compile Include="OCRRelated.cs" />
@@ -62,6 +78,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Factories\RecieptMetaDataFactory.cs" />
     <Compile Include="TestDisposable.cs" />
+    <Compile Include="Zeeshan\ATMCounter.cs" />
+    <Compile Include="Zeeshan\CustomAttribute.cs" />
+    <Compile Include="Zeeshan\EnumExtensions.cs" />
+    <Compile Include="Zeeshan\Extractor.cs" />
+    <Compile Include="Zeeshan\GoogleOCRRequest.cs" />
+    <Compile Include="Zeeshan\OCRElements.cs" />
+    <Compile Include="Zeeshan\TextElement.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -71,6 +94,51 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Google OCR Test app Screenshot.png" />
+    <Content Include="APIFullResponse.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ATMHOSTR.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="atmphysical.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ATMPhysicalCashOCR.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="CDM.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="CDMHOST.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Recycle.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="RecyclHost.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="test.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="test1.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="test2.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.6.1 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

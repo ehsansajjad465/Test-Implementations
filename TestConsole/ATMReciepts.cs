@@ -129,8 +129,8 @@ namespace TestConsole
 
                         if (currentMatchAdded)
                         {
-                            foreach (var processed in matchingY.ToList())
-                                textAnnotations.Remove(processed);
+                            //foreach (var processed in matchingY.ToList())
+                            //    textAnnotations.Remove(processed);
                         }
                         else
                         {
@@ -272,8 +272,8 @@ namespace TestConsole
 
                         if (currentMatchAdded)
                         {
-                            foreach (var processed in matchingY.ToList())
-                                textAnnotations.Remove(processed);
+                            //foreach (var processed in matchingY.ToList())
+                            //    textAnnotations.Remove(processed);
                         }
                         else
                         {
